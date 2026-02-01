@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create basic test users
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -24,7 +23,10 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->admin()->create([
             'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'email' => 'admin@pmb.test',
         ]);
+
+        // Run profile seeder
+        $this->call(UserProfileSeeder::class);
     }
 }

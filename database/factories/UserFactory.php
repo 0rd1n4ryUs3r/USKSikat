@@ -41,4 +41,30 @@ class UserFactory extends Factory
             'role' => 'admin',
         ]);
     }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Create a user with complete profile information.
+     */
+    public function withProfile(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->address(),
+            'birth_place' => fake()->city(),
+            'birth_date' => fake()->dateTimeBetween('-30 years', '-17 years'),
+            'gender' => fake()->randomElement(['L', 'P']),
+            'father_name' => fake()->name('male'),
+            'mother_name' => fake()->name('female'),
+        ]);
+    }
 }
