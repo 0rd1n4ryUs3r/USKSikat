@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -12,8 +13,8 @@ class HomeController extends Controller
     public function index()
     {
         // Jika user sudah login, redirect ke dashboard sesuai role
-        if (auth()->check()) {
-            $user = auth()->user();
+        if (Auth::check()) {
+            $user = Auth::user();
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } else {
@@ -22,7 +23,7 @@ class HomeController extends Controller
         }
 
         // Jika belum login, tampilkan landing page
-        return view('home');
+        return view('welcome');
     }
 
     /**
