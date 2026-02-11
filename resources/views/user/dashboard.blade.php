@@ -76,7 +76,7 @@
                     <div>
                         <h3 class="text-xl font-bold mb-4">Menu Utama</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <a href="#" class="bg-blue-600 text-white p-6 rounded-lg hover:bg-blue-700 transition text-center">
+                            <a href="{{ route('user.test.index') }}" class="bg-blue-600 text-white p-6 rounded-lg hover:bg-blue-700 transition text-center">
                                 <i class="fas fa-file-alt text-2xl mb-2"></i>
                                 <h4 class="font-bold">Ikuti Test Masuk</h4>
                                 <p class="text-sm mt-2">Uji kemampuan untuk masuk ke perguruan tinggi</p>

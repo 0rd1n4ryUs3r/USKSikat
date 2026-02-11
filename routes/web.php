@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\TestController as UserTestController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -25,13 +26,37 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-});
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    });
 
 // User Routes
-Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-});
+Route::middleware(['auth', 'role:user'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+    });
 
-require __DIR__.'/auth.php';
+// User Test Routes
+Route::middleware(['auth', 'role:user'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+        // Test Routes
+        Route::prefix('test')
+            ->name('test.')
+            ->group(function () {
+                Route::get('/', [UserTestController::class, 'index'])->name('index');
+                Route::post('/mulai', [UserTestController::class, 'mulaiTest'])->name('mulai');
+                Route::get('/ongoing/{token}', [UserTestController::class, 'ongoing'])->name('ongoing');
+                Route::post('/submit/{token}', [UserTestController::class, 'submitJawaban'])->name('submit');
+                Route::post('/timeout/{token}', [UserTestController::class, 'timeout'])->name('timeout');
+                Route::get('/hasil', [UserTestController::class, 'hasil'])->name('hasil');
+            });
+    });
+
+require __DIR__ . '/auth.php';
