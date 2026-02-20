@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\CalonMaba;
+use App\Models\SoalTest;
 
 class DashboardController extends Controller
 {
@@ -12,7 +13,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Middleware untuk admin akan kita buat nanti
-        return view('admin.dashboard');
+        $totalPendaftar = CalonMaba::count();
+        $totalLulus = CalonMaba::where('status_test', 'lulus')->count();
+        $totalDaftarUlang = CalonMaba::where('status_daftar_ulang', 'lengkap')->count();
+        $totalSoal = SoalTest::count();
+
+        return view('admin.dashboard', compact(
+            'totalPendaftar',
+            'totalLulus',
+            'totalDaftarUlang',
+            'totalSoal'
+        ));
     }
 }

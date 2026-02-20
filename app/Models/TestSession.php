@@ -15,7 +15,14 @@ class TestSession extends Model
         'status',
         'jumlah_soal',
         'nilai',
-        'hasil'
+        'hasil',
+    ];
+
+    protected $casts = [
+        'mulai' => 'datetime',
+        'selesai' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user()

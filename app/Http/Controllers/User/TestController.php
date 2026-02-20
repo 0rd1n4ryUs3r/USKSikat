@@ -4,23 +4,24 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\CalonMaba;
+use App\Models\JawabanTest;
 use App\Models\SoalTest;
 use App\Models\TestSession;
-use App\Models\JawabanTest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class TestController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Cek apakah user sudah punya calon maba record
         $calonMaba = CalonMaba::firstOrCreate(
             ['user_id' => $user->id],
-            ['nomor_test' => 'TEST-' . date('Y') . '-' . str_pad($user->id, 5, '0', STR_PAD_LEFT)]
+            ['nomor_test' => 'TEST-'.date('Y').'-'.str_pad($user->id, 5, '0', STR_PAD_LEFT)]
         );
 
         // Cek apakah sudah pernah test
@@ -32,12 +33,12 @@ class TestController extends Controller
             return redirect()->route('user.test.hasil');
         }
 
-        return view('user.test.instruksi', compact('calonMaba'));
+        return view('user.test.index', compact('calonMaba'));
     }
 
     public function mulaiTest(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Cek apakah ada test yang masih ongoing
         $ongoingSession = TestSession::where('user_id', $user->id)
@@ -58,7 +59,7 @@ class TestController extends Controller
             'mulai' => now(),
             'status' => 'ongoing',
             'durasi' => 1800, // 30 menit
-            'jumlah_soal' => 20
+            'jumlah_soal' => 20,
         ]);
 
         return redirect()->route('user.test.ongoing', ['token' => $token]);
@@ -67,7 +68,7 @@ class TestController extends Controller
     public function ongoing($token)
     {
         $testSession = TestSession::where('token', $token)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('status', 'ongoing')
             ->firstOrFail();
 
@@ -91,7 +92,7 @@ class TestController extends Controller
             ->first();
 
         // Jika tidak ada soal lagi, selesaikan test
-        if (!$soal) {
+        if (! $soal) {
             return $this->selesaikanTest($testSession);
         }
 
@@ -108,11 +109,11 @@ class TestController extends Controller
     {
         $request->validate([
             'soal_id' => 'required|exists:soal_tests,id',
-            'jawaban' => 'required|in:a,b,c,d,e'
+            'jawaban' => 'required|in:a,b,c,d,e',
         ]);
 
         $testSession = TestSession::where('token', $token)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('status', 'ongoing')
             ->firstOrFail();
 
@@ -120,24 +121,24 @@ class TestController extends Controller
 
         // Simpan jawaban
         JawabanTest::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'soal_test_id' => $soal->id,
             'test_session_id' => $testSession->id,
             'jawaban_user' => $request->jawaban,
             'is_correct' => $soal->jawaban_benar === $request->jawaban,
-            'waktu_jawab' => $request->waktu_jawab ?? null
+            'waktu_jawab' => $request->waktu_jawab ?? null,
         ]);
 
         return response()->json([
             'success' => true,
-            'next_url' => route('user.test.ongoing', ['token' => $token])
+            'next_url' => route('user.test.ongoing', ['token' => $token]),
         ]);
     }
 
-    public function timeout($token)
+    public function timeout(Request $request, $token)
     {
         $testSession = TestSession::where('token', $token)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->where('status', 'ongoing')
             ->firstOrFail();
 
@@ -158,7 +159,7 @@ class TestController extends Controller
             'selesai' => now(),
             'status' => 'completed',
             'nilai' => $nilai,
-            'hasil' => $nilai >= 70 ? 'lulus' : 'tidak_lulus'
+            'hasil' => $nilai >= 70 ? 'lulus' : 'tidak_lulus',
         ]);
 
         // Update calon maba
@@ -166,7 +167,7 @@ class TestController extends Controller
         if ($calonMaba) {
             $calonMaba->update([
                 'status_test' => $nilai >= 70 ? 'lulus' : 'tidak_lulus',
-                'nilai_test' => $nilai
+                'nilai_test' => $nilai,
             ]);
         }
 
@@ -175,14 +176,14 @@ class TestController extends Controller
 
     public function hasil()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $testSession = TestSession::where('user_id', $user->id)
             ->where('status', 'completed')
             ->latest()
             ->first();
 
-        if (!$testSession) {
+        if (! $testSession) {
             return redirect()->route('user.test.index');
         }
 
@@ -190,6 +191,8 @@ class TestController extends Controller
             ->where('test_session_id', $testSession->id)
             ->get();
 
-        return view('user.test.hasil', compact('testSession', 'jawaban'));
+        $calonMaba = CalonMaba::where('user_id', $testSession->user_id)->first();
+
+        return view('user.test.hasil', compact('testSession', 'jawaban', 'calonMaba'));
     }
 }

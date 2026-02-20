@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CalonMabaController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\DaftarUlangController as UserDaftarUlangController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\TestController as UserTestController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,7 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('calon-maba', CalonMabaController::class);
     });
 
 // User Routes
@@ -59,4 +62,14 @@ Route::middleware(['auth', 'role:user'])
             });
     });
 
-require __DIR__ . '/auth.php';
+// User Daftar Ulang & Ambil NIM
+Route::middleware(['auth', 'role:user'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+        Route::get('/daftar-ulang', [UserDaftarUlangController::class, 'index'])->name('daftar-ulang');
+        Route::post('/daftar-ulang', [UserDaftarUlangController::class, 'submit'])->name('daftar-ulang.submit');
+        Route::get('/ambil-nim', [UserDaftarUlangController::class, 'ambilNim'])->name('ambil-nim');
+    });
+
+require __DIR__.'/auth.php';
