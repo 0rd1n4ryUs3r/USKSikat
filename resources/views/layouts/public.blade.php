@@ -51,8 +51,6 @@
                         <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600 font-medium">Beranda</a>
                         <a href="{{ route('about') }}" class="text-gray-700 hover:text-blue-600 font-medium">Tentang</a>
                         <a href="{{ route('contact') }}" class="text-gray-700 hover:text-blue-600 font-medium">Kontak</a>
-                        <a href="#jalur" class="text-gray-700 hover:text-blue-600 font-medium">Jalur Masuk</a>
-                        <a href="#jadwal" class="text-gray-700 hover:text-blue-600 font-medium">Jadwal</a>
                     </div>
                 </div>
 

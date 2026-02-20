@@ -225,7 +225,7 @@
                                 Anda telah berhasil melewati test masuk PMB 2026. Langkah selanjutnya adalah melakukan
                                 <strong>daftar ulang</strong> untuk melengkapi administrasi.
                             </p>
-                            <a href="#" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition">
+                            <a href="{{ route('user.daftar-ulang') }}" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition">
                                 Lanjutkan Daftar Ulang
                             </a>
                         </div>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CalonMaba;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class CalonMabaController extends Controller
 {
@@ -25,12 +25,7 @@ class CalonMabaController extends Controller
      */
     public function create()
     {
-        // Get users yang belum punya calon maba record
-        $availableUsers = User::where('role', 'user')
-            ->doesntHave('calonMaba')
-            ->get();
-
-        return view('admin.calon-maba.create', compact('availableUsers'));
+        return view('admin.calon-maba.create');
     }
 
     /**
@@ -39,19 +34,33 @@ class CalonMabaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id|unique:calon_maba,user_id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
             'nomor_test' => 'nullable|string|unique:calon_maba,nomor_test',
         ]);
 
-        // Auto-generate nomor_test if not provided
-        if (empty($validated['nomor_test'])) {
-            $validated['nomor_test'] = 'TEST-'.date('Y').'-'.Str::padLeft(User::find($validated['user_id'])->id, 4, '0');
-        }
+        // Create new user
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'user',
+        ]);
 
-        CalonMaba::create($validated);
+        // Auto-generate nomor_test if not provided
+        $nomorTest = $validated['nomor_test'] ?? 'TEST-'.date('Y').'-'.str_pad($user->id, 5, '0', STR_PAD_LEFT);
+
+        // Create calon maba record
+        CalonMaba::create([
+            'user_id' => $user->id,
+            'nomor_test' => $nomorTest,
+            'status_test' => 'belum',
+            'status_daftar_ulang' => 'belum',
+        ]);
 
         return redirect()->route('admin.calon-maba.index')
-            ->with('success', 'Calon Maba berhasil ditambahkan.');
+            ->with('success', "Calon maba berhasil ditambahkan. Password: {$validated['password']}");
     }
 
     /**

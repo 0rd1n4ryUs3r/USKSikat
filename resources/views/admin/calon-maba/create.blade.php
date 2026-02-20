@@ -15,23 +15,43 @@
                     <form action="{{ route('admin.calon-maba.store') }}" method="POST">
                         @csrf
 
-                        <!-- User Selection -->
+                        <!-- Nama Lengkap -->
                         <div class="mb-6">
-                            <label for="user_id" class="block text-sm font-semibold text-gray-700 mb-2">Pilih User</label>
-                            <select id="user_id" name="user_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('user_id') border-red-500 @enderror">
-                                <option value="">-- Pilih User --</option>
-                                @foreach ($availableUsers as $user)
-                                    <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
-                                        {{ $user->name }} ({{ $user->email }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('user_id')
+                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
+                            <input type="text" id="name" name="name"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 @enderror"
+                                value="{{ old('name') }}"
+                                placeholder="Masukkan nama lengkap"
+                                required>
+                            @error('name')
                                 <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
                             @enderror
-                            @if ($availableUsers->isEmpty())
-                                <p class="text-gray-500 text-sm mt-2">Semua user sudah memiliki data calon maba</p>
-                            @endif
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-6">
+                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                            <input type="email" id="email" name="email"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror"
+                                value="{{ old('email') }}"
+                                placeholder="Masukkan email"
+                                required>
+                            @error('email')
+                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-6">
+                            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                            <input type="password" id="password" name="password"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-500 @enderror"
+                                placeholder="Minimal 8 karakter"
+                                required>
+                            <p class="text-gray-500 text-sm mt-2">Minimal 8 karakter</p>
+                            @error('password')
+                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Nomor Test -->
