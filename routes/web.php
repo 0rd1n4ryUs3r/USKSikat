@@ -8,6 +8,7 @@ use App\Http\Controllers\User\DaftarUlangController as UserDaftarUlangController
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\TestController as UserTestController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -15,16 +16,23 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Route autentikasi Breeze
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('dashboard', function (Request $request) {
+    $user = $request->user();
+
+    if ($user && $user->role === 'admin') {
+        return app(\App\Http\Controllers\Admin\DashboardController::class)->index();
+    }
+
+    return redirect()->route('user.dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/profile/remove-photo', [ProfileController::class, 'removePhoto'])->name('profile.remove-photo');
+    Route::delete('/profile/remove-photo', [ProfileController::class, 'removePhoto'])->name('profile.remove-photo');
 });
 
 // Admin Routes
@@ -33,6 +41,9 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('calon-maba/terdaftar', [CalonMabaController::class, 'terdaftar'])->name('calon-maba.terdaftar');
+        Route::get('calon-maba/status-test', [CalonMabaController::class, 'statusTest'])->name('calon-maba.status-test');
+        Route::get('calon-maba/daftar-ulang', [CalonMabaController::class, 'daftarUlang'])->name('calon-maba.daftar-ulang');
         Route::resource('calon-maba', CalonMabaController::class);
     });
 

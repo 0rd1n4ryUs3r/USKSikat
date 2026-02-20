@@ -37,7 +37,7 @@
                         <!-- Nomor Test -->
                         <div class="mb-6">
                             <label for="nomor_test" class="block text-sm font-semibold text-gray-700 mb-2">Nomor Test (Opsional)</label>
-                            <input type="text" id="nomor_test" name="nomor_test" 
+                            <input type="text" id="nomor_test" name="nomor_test"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('nomor_test') border-red-500 @enderror"
                                 value="{{ old('nomor_test') }}"
                                 placeholder="Kosongkan untuk auto-generate">

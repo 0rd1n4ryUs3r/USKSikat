@@ -21,6 +21,18 @@
                         </div>
                     @endif
 
+                    @if (session('status') === 'photo-updated')
+                        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                            {{ __('Profile photo updated successfully!') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <!-- Left Column - Photo & Basic Info -->
                         <div class="lg:col-span-1">
@@ -57,7 +69,7 @@
 
                                     <!-- Photo Upload/Remove -->
                                     <div class="mt-4 space-y-2">
-                                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" id="photoForm">
+                                        <form method="POST" action="{{ route('profile.photo.update') }}" enctype="multipart/form-data" id="photoForm">
                                             @csrf
                                             @method('patch')
                                             <input type="file" name="photo" id="photo" class="hidden" accept="image/*" onchange="document.getElementById('photoForm').submit()">
@@ -74,6 +86,9 @@
                                                     <i class="fas fa-trash mr-1"></i>Hapus Foto
                                                 </button>
                                             </form>
+                                        @endif
+                                        @if($errors->has('photo'))
+                                            <p class="text-red-600 text-sm mt-2">{{ $errors->first('photo') }}</p>
                                         @endif
                                     </div>
                                 </div>

@@ -99,4 +99,56 @@ class CalonMabaController extends Controller
         return redirect()->route('admin.calon-maba.index')
             ->with('success', 'Calon Maba berhasil dihapus.');
     }
+
+    /**
+     * List User yang sudah mendaftar
+     */
+    public function terdaftar()
+    {
+        $calonMaba = CalonMaba::with('user')->paginate(15);
+
+        return view('admin.calon-maba.terdaftar', compact('calonMaba'));
+    }
+
+    /**
+     * List User berdasarkan status test
+     */
+    public function statusTest()
+    {
+        $statusFilter = request('status', 'lulus');
+
+        $query = CalonMaba::with('user');
+
+        if ($statusFilter === 'tidak_lulus') {
+            $query->where('status_test', 'tidak_lulus');
+        } elseif ($statusFilter === 'belum') {
+            $query->where('status_test', 'belum');
+        } else {
+            $query->where('status_test', 'lulus');
+        }
+
+        $calonMaba = $query->paginate(15);
+
+        return view('admin.calon-maba.status-test', compact('calonMaba', 'statusFilter'));
+    }
+
+    /**
+     * List User berdasarkan status daftar ulang
+     */
+    public function daftarUlang()
+    {
+        $daftarUlangFilter = request('status', 'lengkap');
+
+        $query = CalonMaba::with('user');
+
+        if ($daftarUlangFilter === 'belum') {
+            $query->where('status_daftar_ulang', 'belum');
+        } else {
+            $query->where('status_daftar_ulang', 'lengkap');
+        }
+
+        $calonMaba = $query->paginate(15);
+
+        return view('admin.calon-maba.daftar-ulang', compact('calonMaba', 'daftarUlangFilter'));
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfilePhotoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,33 +30,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        // Validasi tambahan
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'birth_place' => ['nullable', 'string', 'max:100'],
-            'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'in:L,P'],
-            'father_name' => ['nullable', 'string', 'max:255'],
-            'mother_name' => ['nullable', 'string', 'max:255'],
-            'position' => ['nullable', 'string', 'max:100'],
-            'department' => ['nullable', 'string', 'max:100'],
-        ]);
-
-        // Handle photo upload
-        if ($request->hasFile('photo')) {
-            // Delete old photo if exists
-            if ($user->photo && Storage::exists('public/photos/'.$user->photo)) {
-                Storage::delete('public/photos/'.$user->photo);
-            }
-
-            $photo = $request->file('photo');
-            $filename = time().'_'.$user->id.'.'.$photo->getClientOriginalExtension();
-            $photo->storeAs('public/photos', $filename);
-            $validated['photo'] = $filename;
-        }
+        $validated = $request->validated();
 
         // Jika email berubah, reset email verification
         if ($user->email !== $validated['email']) {
@@ -74,6 +49,43 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update only profile photo.
+     */
+    public function updatePhoto(ProfilePhotoRequest $request): RedirectResponse
+    {
+        try {
+            $user = $request->user();
+
+            // Delete old photo if exists
+            if ($user->photo) {
+                Storage::disk('public')->delete('photos/'.$user->photo);
+            }
+
+            $photo = $request->file('photo');
+            $filename = time().'_'.$user->id.'.'.$photo->getClientOriginalExtension();
+
+            // Store file using public disk with proper permissions
+            $path = Storage::disk('public')->putFileAs('photos', $photo, $filename, 'public');
+
+            $user->photo = $filename;
+            $user->save();
+
+            // upload successful (no verbose info log)
+
+            return Redirect::route('profile.edit')->with('status', 'photo-updated');
+        } catch (\Exception $e) {
+            \Log::error('Photo upload failed', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return Redirect::route('profile.edit')
+                ->with('error', 'Gagal upload foto: '.$e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
@@ -88,7 +100,7 @@ class ProfileController extends Controller
 
         // Delete user photo if exists
         if ($user->photo) {
-            Storage::delete('public/photos/'.$user->photo);
+            Storage::disk('public')->delete('photos/'.$user->photo);
         }
 
         $user->delete();
@@ -107,7 +119,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         if ($user->photo) {
-            Storage::delete('public/photos/'.$user->photo);
+            Storage::disk('public')->delete('photos/'.$user->photo);
             $user->photo = null;
             $user->save();
         }
