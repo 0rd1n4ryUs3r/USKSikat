@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SoalTestRequest;
 use App\Models\SoalTest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SoalTestController extends Controller
@@ -29,12 +27,6 @@ class SoalTestController extends Controller
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $validated['gambar'] = $file->storeAs('soal-test', $filename, 'public');
-        }
-
         SoalTest::create($validated);
 
         return Redirect::route('admin.soal-test.index')->with('success', 'Soal test berhasil dibuat.');
@@ -49,16 +41,6 @@ class SoalTestController extends Controller
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('gambar')) {
-            if ($soalTest->gambar && Storage::disk('public')->exists($soalTest->gambar)) {
-                Storage::disk('public')->delete($soalTest->gambar);
-            }
-
-            $file = $request->file('gambar');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $validated['gambar'] = $file->storeAs('soal-test', $filename, 'public');
-        }
-
         $soalTest->update($validated);
 
         return Redirect::route('admin.soal-test.index')->with('success', 'Soal test berhasil diperbarui.');
@@ -66,10 +48,6 @@ class SoalTestController extends Controller
 
     public function destroy(SoalTest $soalTest): RedirectResponse
     {
-        if ($soalTest->gambar && Storage::disk('public')->exists($soalTest->gambar)) {
-            Storage::disk('public')->delete($soalTest->gambar);
-        }
-
         $soalTest->delete();
 
         return Redirect::route('admin.soal-test.index')->with('success', 'Soal test berhasil dihapus.');

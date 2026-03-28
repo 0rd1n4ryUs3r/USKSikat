@@ -25,8 +25,6 @@
                                 <th class="px-4 py-3">No</th>
                                 <th class="px-4 py-3">Pertanyaan</th>
                                 <th class="px-4 py-3">Kategori</th>
-                                <th class="px-4 py-3">Tingkat</th>
-                                <th class="px-4 py-3">Gambar</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -41,21 +39,9 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-3">
-                                        <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $soal->tingkat_kesulitan == 'mudah' ? 'bg-green-100 text-green-800' : ($soal->tingkat_kesulitan == 'sedang' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                            {{ ucfirst($soal->tingkat_kesulitan) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        @if ($soal->gambar)
-                                            <img src="{{ asset('storage/'.$soal->gambar) }}" alt="Gambar" class="h-12 w-12 object-cover rounded">
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3">
                                         <div class="flex gap-2">
                                             <a href="{{ route('admin.soal-test.edit', $soal) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
-                                            <form action="{{ route('admin.soal-test.destroy', $soal) }}" method="POST" onsubmit="return confirm('Hapus soal test ini?');">
+                                            <form action="{{ route('admin.soal-test.destroy', $soal) }}" method="POST" onsubmit="return confirm('Hapus soal test {{ $soal->id }}?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-800">Hapus</button>
@@ -65,7 +51,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">Belum ada soal test.</td>
+                                    <td colspan="4" class="px-4 py-8 text-center text-gray-500">Belum ada soal test.</td>
                                 </tr>
                             @endforelse
                         </tbody>

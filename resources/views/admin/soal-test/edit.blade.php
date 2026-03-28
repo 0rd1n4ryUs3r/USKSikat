@@ -49,7 +49,7 @@
                             @error('pilihan_e') <p class="text-red-600 text-sm mt-2">{{ $message }}</p> @enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label for="jawaban_benar" class="block text-sm font-semibold text-gray-700 mb-2">Jawaban Benar</label>
                                 <select id="jawaban_benar" name="jawaban_benar" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('jawaban_benar') border-red-500 @enderror" required>
@@ -74,28 +74,6 @@
                                 </select>
                                 @error('kategori') <p class="text-red-600 text-sm mt-2">{{ $message }}</p> @enderror
                             </div>
-
-                            <div>
-                                <label for="tingkat_kesulitan" class="block text-sm font-semibold text-gray-700 mb-2">Tingkat Kesulitan</label>
-                                <select id="tingkat_kesulitan" name="tingkat_kesulitan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('tingkat_kesulitan') border-red-500 @enderror" required>
-                                    <option value="">Pilih</option>
-                                    <option value="mudah" @selected(old('tingkat_kesulitan', $soalTest->tingkat_kesulitan) == 'mudah')>Mudah</option>
-                                    <option value="sedang" @selected(old('tingkat_kesulitan', $soalTest->tingkat_kesulitan) == 'sedang')>Sedang</option>
-                                    <option value="sulit" @selected(old('tingkat_kesulitan', $soalTest->tingkat_kesulitan) == 'sulit')>Sulit</option>
-                                </select>
-                                @error('tingkat_kesulitan') <p class="text-red-600 text-sm mt-2">{{ $message }}</p> @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="gambar" class="block text-sm font-semibold text-gray-700 mb-2">Gambar (Opsional)</label>
-                            <input type="file" id="gambar" name="gambar" accept="image/*" class="w-full text-sm text-gray-700" />
-                            @if ($soalTest->gambar)
-                                <div class="mt-3">
-                                    <img src="{{ asset('storage/'.$soalTest->gambar) }}" alt="Preview" class="h-32 w-auto rounded border">
-                                </div>
-                            @endif
-                            @error('gambar') <p class="text-red-600 text-sm mt-2">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="mb-6">

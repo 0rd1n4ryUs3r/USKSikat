@@ -267,6 +267,7 @@ class SoalTestSeeder extends Seeder
         ];
 
         foreach ($soals as $soal) {
+            unset($soal['tingkat_kesulitan']);
             SoalTest::create($soal);
         }
 

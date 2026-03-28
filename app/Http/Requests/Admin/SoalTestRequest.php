@@ -22,9 +22,7 @@ class SoalTestRequest extends FormRequest
             'pilihan_e' => ['nullable', 'string', 'max:255'],
             'jawaban_benar' => ['required', 'in:a,b,c,d,e'],
             'kategori' => ['required', 'in:matematika,bahasa_inggris,logika,umum'],
-            'tingkat_kesulitan' => ['required', 'in:mudah,sedang,sulit'],
             'penjelasan' => ['nullable', 'string'],
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
         ];
     }
 }

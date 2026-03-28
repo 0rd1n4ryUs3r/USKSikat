@@ -15,9 +15,7 @@ class SoalTest extends Model
         'pilihan_e',
         'jawaban_benar',
         'kategori',
-        'tingkat_kesulitan',
-        'gambar',
-        'penjelasan'
+        'penjelasan',
     ];
 
     public function jawabanTests()
