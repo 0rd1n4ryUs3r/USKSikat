@@ -90,13 +90,13 @@
                                 </a>
                             </div>
 
-                            <div class="bg-gradient-to-br from-red-100 to-red-50 p-6 rounded-lg border border-red-200 opacity-50 cursor-not-allowed">
+                            <div class="bg-gradient-to-br from-red-100 to-red-50 p-6 rounded-lg border border-red-200">
                                 <i class="fas fa-question-circle text-red-600 text-3xl mb-3"></i>
                                 <h4 class="text-lg font-semibold text-gray-900 mb-2">Kelola Soal Test</h4>
                                 <p class="text-gray-600 text-sm mb-4">Tambah & edit bank soal test</p>
-                                <span class="text-gray-500 font-semibold">
-                                    Coming Soon <i class="fas fa-lock ml-2"></i>
-                                </span>
+                                <a href="{{ route('admin.soal-test.index') }}" class="text-red-600 font-semibold hover:text-red-800">
+                                    Buka <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
                             </div>
 
                             <div class="bg-gradient-to-br from-indigo-100 to-indigo-50 p-6 rounded-lg border border-indigo-200 opacity-50 cursor-not-allowed">

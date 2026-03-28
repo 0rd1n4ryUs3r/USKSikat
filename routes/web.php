@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CalonMabaController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\SoalTestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DaftarUlangController as UserDaftarUlangController;
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('calon-maba/status-test', [CalonMabaController::class, 'statusTest'])->name('calon-maba.status-test');
         Route::get('calon-maba/daftar-ulang', [CalonMabaController::class, 'daftarUlang'])->name('calon-maba.daftar-ulang');
         Route::resource('calon-maba', CalonMabaController::class);
+        Route::resource('soal-test', SoalTestController::class);
     });
 
 // User Routes
